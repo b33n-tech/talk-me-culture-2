@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ponti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f1;
+  --surface: #ffffff;
+  --border: #e4ddd3;
+  --border-strong: #c8bfb2;
+  --ink: #18160f;
+  --ink-2: #5a5448;
+  --ink-3: #9c9489;
+  --accent: #c05a28;
+  --accent-bg: #fdf0e8;
+  --accent-border: #e8c4a4;
+  --green: #2e7d56;
+  --green-bg: #eaf4ef;
+  --amber: #b07a10;
+  --r: 14px;
+  --r-sm: 9px;
+  --fs: 16px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { font-size: var(--fs); }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100dvh; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; min-height: 100dvh; }
+
+/* ═══════════════════════════════
+   SETUP SCREEN
+═══════════════════════════════ */
+#screen-setup {
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem calc(1.5rem + var(--safe-bottom));
+  background: var(--bg);
+}
+
+.setup-inner {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.brand-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.brand-name em { font-style: italic; color: var(--accent); }
+
+.brand-tag {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  margin-top: 0.4rem;
+  font-style: italic;
+  font-family: 'Instrument Serif', serif;
+}
+
+.setup-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 1.8rem 1.5rem;
+  box-shadow: 0 2px 20px rgba(24,22,15,0.06);
+}
+
+.field { margin-bottom: 1.1rem; }
+
+.field label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-2);
+  margin-bottom: 0.45rem;
+}
+
+.field input, .field select {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.field input:focus, .field select:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.field .hint {
+  font-size: 0.72rem;
+  color: var(--ink-3);
+  margin-top: 0.3rem;
+}
+
+.sep { height: 1px; background: var(--border); margin: 1.4rem 0; }
+
+.btn-start {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  letter-spacing: -0.01em;
+}
+.btn-start:hover { background: var(--accent); }
+
+/* supabase section */
+.supa-details summary {
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  margin-bottom: 0.8rem;
+}
+.supa-details summary::before { content: '⚙'; font-size: 0.8rem; }
+.supa-details[open] summary::before { content: '✕'; }
+.supa-details summary:hover { color: var(--ink-2); }
+
+.user-id-note {
+  margin-top: 1rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-sm);
+  font-size: 0.72rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.user-id-note strong {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════
+   CHAT SCREEN
+═══════════════════════════════ */
+#screen-chat { height: 100dvh; overflow: hidden; }
+
+/* Header */
+.chat-top {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.top-left { display: flex; align-items: center; gap: 0.6rem; }
+
+.logo-xs {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.2rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.logo-xs em { font-style: italic; color: var(--accent); }
+
+.session-chip {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.18rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: 0.06em;
+}
+
+.conn-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.conn-dot.ok { background: var(--green); }
+.conn-dot.wait { background: var(--amber); animation: blink 1.4s infinite; }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.top-right { display: flex; align-items: center; gap: 0.5rem; }
+
+.who-pill {
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.lang-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+  letter-spacing: 0.04em;
+}
+
+.btn-settings {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  transition: all 0.15s;
+}
+.btn-settings:hover { border-color: var(--ink-2); color: var(--ink); }
+
+/* Messages area */
+.msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  overscroll-behavior: contain;
+}
+
+.msgs::-webkit-scrollbar { width: 3px; }
+.msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  gap: 0.6rem;
+  padding: 2rem;
+  text-align: center;
+}
+.empty-glyph { font-size: 2.2rem; opacity: 0.35; }
+.empty-txt { font-size: 0.9rem; }
+
+/* Bubbles */
+.msg-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 76%;
+  animation: popIn 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn {
+  from { opacity:0; transform:scale(0.92) translateY(6px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+
+.msg-row.mine { align-self: flex-end; align-items: flex-end; }
+.msg-row.theirs { align-self: flex-start; align-items: flex-start; }
+
+.bubble {
+  padding: 0.7rem 1rem;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.mine .bubble {
+  background: var(--ink);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.theirs .bubble {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+
+.equiv {
+  font-size: 0.7rem;
+  color: var(--accent);
+  font-style: italic;
+  margin-top: 0.2rem;
+  padding: 0 0.3rem;
+}
+
+.msg-meta {
+  font-size: 0.66rem;
+  color: var(--ink-3);
+  margin-top: 0.25rem;
+  padding: 0 0.3rem;
+}
+
+/* ── COMPOSER ── */
+.composer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  padding-bottom: calc(0.2rem + var(--safe-bottom));
+}
+
+/* Category pills */
+.cat-row {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.7rem 0.9rem 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cat-row::-webkit-scrollbar { display: none; }
+
+.cat-pill {
+  flex-shrink: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 0.75rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.13s;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+}
+.cat-pill:hover { border-color: var(--accent-border); color: var(--accent); }
+.cat-pill.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* Messages grid */
+.msg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  padding: 0.3rem 0.9rem 0.6rem;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+@media (max-width: 360px) { .msg-grid { grid-template-columns: 1fr; max-height: 160px; } }
+
+.msg-btn {
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.4;
+  transition: all 0.13s;
+  font-family: 'Inter', sans-serif;
+}
+.msg-btn:hover { border-color: var(--accent-border); background: var(--accent-bg); color: var(--ink); }
+.msg-btn.sel { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+
+/* Send bar */
+.send-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.preview-text {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+  font-style: italic;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--r-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  transition: all 0.13s;
+}
+.preview-text.ready {
+  color: var(--ink);
+  font-style: normal;
+  background: var(--surface);
+  border-color: var(--accent-border);
+}
+
+.btn-send {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-send:hover:not(:disabled) { background: var(--accent); }
+.btn-send:active:not(:disabled) { transform: scale(0.92); }
+.btn-send:disabled { background: var(--border); cursor: not-allowed; }
+.btn-send svg { fill: white; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: calc(1.5rem + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--ink);
+  color: #fff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+  transition: all 0.25s;
+  max-width: calc(100vw - 2rem);
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── CONN PANEL ── */
+.conn-panel {
+  position: fixed;
+  top: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - 1.6rem);
+  max-width: 360px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: 0 6px 24px rgba(24,22,15,0.11);
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  transition: opacity 0.35s, transform 0.35s;
+}
+.conn-panel.hide { opacity:0; transform:translateX(-50%) translateY(-10px); pointer-events:none; }
+.conn-panel-ico { font-size: 1.2rem; flex-shrink:0; margin-top:0.1rem; }
+.conn-panel-body { flex:1; }
+.conn-panel-title { font-size: 0.78rem; font-weight: 600; color: var(--ink); }
+.conn-panel-msg { font-size: 0.7rem; color: var(--ink-3); margin-top: 0.15rem; font-family: monospace; word-break: break-word; }
+.conn-panel-retry {
+  margin-top: 0.5rem; font-size: 0.72rem; padding: 0.25rem 0.7rem;
+  border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg);
+  cursor: pointer; color: var(--ink-2); display: none; transition: all 0.13s;
+  font-family: 'Inter', sans-serif;
+}
+.conn-panel-retry:hover { border-color: var(--accent); color: var(--accent); }
+.conn-panel.loading { border-left: 3px solid var(--amber); }
+.conn-panel.connected { border-left: 3px solid var(--green); }
+.conn-panel.error_config, .conn-panel.error_network { border-left: 3px solid var(--accent); }
+.conn-panel.connected .conn-panel-title { color: var(--green); }
+.conn-panel.error_config .conn-panel-title,
+.conn-panel.error_network .conn-panel-title { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     SETUP
+══════════════════════════════ -->
+<div id="screen-setup" class="screen active">
+  <div class="setup-inner">
+
+    <div class="brand">
+      <div class="brand-name">P<em>o</em>nti</div>
+      <div class="brand-tag" id="brand-tag">Des ponts, pas des murs.</div>
+    </div>
+
+    <div class="setup-card">
+      <div class="field">
+        <label id="lbl-name">Votre prénom</label>
+        <input type="text" id="inp-name" placeholder="…" maxlength="32" autocomplete="given-name">
+      </div>
+
+      <div class="field">
+        <label id="lbl-lang">Langue</label>
+        <select id="inp-lang" onchange="applyLang()">
+          <option value="fr">🇫🇷 Français</option>
+          <option value="en">🇬🇧 English</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="zh">🇨🇳 普通话</option>
+          <option value="ar">🇸🇦 العربية</option>
+          <option value="fa">🇮🇷 فارسی</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label id="lbl-conv">Code de session</label>
+        <input type="text" id="inp-conv" placeholder="CO0235" maxlength="8"
+               style="letter-spacing:0.12em;text-transform:uppercase;font-weight:600"
+               oninput="this.value=this.value.toUpperCase()">
+        <div class="hint" id="hint-conv">Le code partagé avec votre interlocuteur·rice.</div>
+      </div>
+
+      <details class="supa-details">
+        <summary id="lbl-supa">Paramètres Supabase</summary>
+        <div class="field">
+          <label>URL Supabase</label>
+          <input type="text" id="inp-supa-url" placeholder="https://nzsxcpmzlrznrpasnonc.supabase.co">
+        </div>
+        <div class="field">
+          <label>Clé anon</label>
+          <input type="password" id="inp-supa-key" placeholder="sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI">
+        </div>
+      </details>
+
+      <div class="user-id-note" id="uid-note">
+        ID de fenêtre : <strong id="uid-display">—</strong><br>
+        Chaque fenêtre obtient un identifiant unique — vous pouvez ouvrir plusieurs onglets sur la même machine.
+      </div>
+
+      <div class="sep"></div>
+
+      <button class="btn-start" id="btn-start" onclick="startChat()">Commencer →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     CHAT
+══════════════════════════════ -->
+<div id="screen-chat" class="screen">
+
+  <div class="chat-top">
+    <div class="top-left">
+      <div class="logo-xs">P<em>o</em>nti</div>
+      <div class="session-chip" id="sess-badge">—</div>
+      <div class="conn-dot wait" id="conn-dot"></div>
+    </div>
+    <div class="top-right">
+      <div class="who-pill">
+        <div class="lang-tag" id="who-lang">FR</div>
+        <span id="who-name">—</span>
+      </div>
+      <button class="btn-settings" onclick="goSetup()" title="Paramètres">⚙</button>
+    </div>
+  </div>
+
+  <div class="msgs" id="msgs">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-glyph">🌐</div>
+      <div class="empty-txt" id="empty-txt">En attente de connexion…</div>
+    </div>
+  </div>
+
+  <div class="composer">
+    <div class="cat-row" id="cat-row"></div>
+    <div class="msg-grid" id="msg-grid"></div>
+    <div class="send-bar">
+      <div class="preview-text" id="preview"><span id="preview-txt">Sélectionnez un message…</span></div>
+      <button class="btn-send" id="btn-send" disabled onclick="sendMessage()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- CONN PANEL -->
+<div class="conn-panel loading hide" id="conn-panel">
+  <div class="conn-panel-ico" id="conn-ico">⏳</div>
+  <div class="conn-panel-body">
+    <div class="conn-panel-title" id="conn-title">Connexion…</div>
+    <div class="conn-panel-msg" id="conn-msg"></div>
+    <button class="conn-panel-retry" id="conn-retry" onclick="setupPolling()">↺ Réessayer</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════
+   UI STRINGS
+══════════════════════════════ */
+const UI = {
+  fr:{ name:"Votre prénom", lang:"Langue", conv:"Code de session", hintConv:"Le code partagé avec votre interlocuteur·rice.", start:"Commencer →", emptyWait:"En attente de connexion…", emptyReady:"Choisissez un message à envoyer.", statusWaiting:"En attente…", statusOk:"Connecté", placeholder:"Sélectionnez un message…", youSent:"Vous", tag:"Des ponts, pas des murs.", supa:"Paramètres Supabase" },
+  en:{ name:"Your first name", lang:"Language", conv:"Session code", hintConv:"The code shared with your contact.", start:"Start →", emptyWait:"Waiting for connection…", emptyReady:"Choose a message to send.", statusWaiting:"Waiting…", statusOk:"Connected", placeholder:"Select a message…", youSent:"You", tag:"Bridges, not walls.", supa:"Supabase settings" },
+  es:{ name:"Tu nombre", lang:"Idioma", conv:"Código de sesión", hintConv:"El código compartido con tu interlocutor/a.", start:"Empezar →", emptyWait:"Esperando conexión…", emptyReady:"Elige un mensaje para enviar.", statusWaiting:"Esperando…", statusOk:"Conectado", placeholder:"Selecciona un mensaje…", youSent:"Tú", tag:"Puentes, no muros.", supa:"Config. Supabase" },
+  zh:{ name:"您的名字", lang:"语言", conv:"会话代码", hintConv:"与对话伙伴共享的代码。", start:"开始 →", emptyWait:"等待连接中…", emptyReady:"请选择要发送的消息。", statusWaiting:"等待中…", statusOk:"已连接", placeholder:"选择一条消息…", youSent:"您", tag:"架桥，而非筑墙。", supa:"Supabase 设置" },
+  ar:{ name:"اسمك الأول", lang:"اللغة", conv:"رمز الجلسة", hintConv:"الرمز المشترك مع محاورك.", start:"ابدأ →", emptyWait:"في انتظار الاتصال…", emptyReady:"اختر رسالة لإرسالها.", statusWaiting:"في الانتظار…", statusOk:"متصل", placeholder:"اختر رسالة…", youSent:"أنت", tag:"جسور، لا جدران.", supa:"إعدادات Supabase" },
+  fa:{ name:"نام شما", lang:"زبان", conv:"کد جلسه", hintConv:"کد مشترک با طرف مقابل.", start:"شروع →", emptyWait:"در انتظار اتصال…", emptyReady:"یک پیام برای ارسال انتخاب کنید.", statusWaiting:"در انتظار…", statusOk:"متصل", placeholder:"یک پیام انتخاب کنید…", youSent:"شما", tag:"پل، نه دیوار.", supa:"تنظیمات Supabase" }
+};
+
+/* ══════════════════════════════
+   MESSAGE LIBRARY (identical to V1)
+══════════════════════════════ */
+const MSG = {
+  fr: [
+    { cat:"👋 Salutations", items:[{id:"g01",t:"Bonjour, je suis content·e qu'on se parle."},{id:"g02",t:"Bonsoir ! Comment tu vas ?"},{id:"g03",t:"Ça fait plaisir de te retrouver."},{id:"g04",t:"Je pense à toi."},{id:"g05",t:"Comment s'est passée ta journée ?"},{id:"g06",t:"Tu as l'air occupé·e, on peut parler plus tard."},{id:"g07",t:"Je voulais juste te saluer."},{id:"g08",t:"Tu es libre pour discuter ?"},{id:"g09",t:"J'espère que tu vas bien."},{id:"g10",t:"Longtemps qu'on ne s'est pas parlé !"},{id:"g11",t:"Je t'envoie une pensée chaleureuse."},{id:"g12",t:"Bonne nuit, à bientôt."}]},
+    { cat:"😊 Bien-être", items:[{id:"w01",t:"Je vais bien, merci de demander."},{id:"w02",t:"Je suis fatigué·e en ce moment."},{id:"w03",t:"Ça va plutôt bien aujourd'hui."},{id:"w04",t:"J'ai eu une journée difficile."},{id:"w05",t:"Je me sens en forme !"},{id:"w06",t:"Je suis un peu stressé·e."},{id:"w07",t:"Je traverse une période compliquée."},{id:"w08",t:"Tout va bien, ne t'inquiète pas."},{id:"w09",t:"J'ai besoin de me reposer."},{id:"w10",t:"Je suis heureux·se en ce moment."},{id:"w11",t:"Je manque d'énergie ces derniers temps."},{id:"w12",t:"Je me sens calme et serein·e."}]},
+    { cat:"🤝 Connexion", items:[{id:"c01",t:"J'aimerais qu'on se voit bientôt."},{id:"c02",t:"Notre échange compte beaucoup pour moi."},{id:"c03",t:"Je t'apprécie vraiment."},{id:"c04",t:"J'ai pensé à toi aujourd'hui."},{id:"c05",t:"Tu m'as manqué·e."},{id:"c06",t:"Je suis là si tu as besoin."},{id:"c07",t:"Je voudrais mieux te connaître."},{id:"c08",t:"Tu peux compter sur moi."},{id:"c09",t:"Nos différences m'enrichissent."},{id:"c10",t:"Je suis content·e qu'on soit en contact."},{id:"c11",t:"J'ai hâte de partager plus avec toi."},{id:"c12",t:"Cette amitié est précieuse pour moi."}]},
+    { cat:"📅 Organisation", items:[{id:"o01",t:"On pourrait se retrouver quand ?"},{id:"o02",t:"Je suis libre ce week-end."},{id:"o03",t:"Je ne suis pas disponible en ce moment."},{id:"o04",t:"On reporte à une autre fois ?"},{id:"o05",t:"Quel moment te convient le mieux ?"},{id:"o06",t:"Je confirme notre rendez-vous."},{id:"o07",t:"Je dois annuler, je suis désolé·e."},{id:"o08",t:"Tu préfères qu'on se retrouve où ?"},{id:"o09",t:"Je serai là à l'heure."},{id:"o10",t:"Je risque d'avoir du retard."},{id:"o11",t:"C'est parfait pour moi."},{id:"o12",t:"Je vais voir et je te reviens."}]},
+    { cat:"💬 Échange", items:[{id:"e01",t:"Je ne comprends pas tout à fait, tu peux reformuler ?"},{id:"e02",t:"C'est intéressant ce que tu dis."},{id:"e03",t:"Je suis d'accord avec toi."},{id:"e04",t:"Je vois les choses différemment."},{id:"e05",t:"Tu as raison."},{id:"e06",t:"J'y réfléchis."},{id:"e07",t:"C'est une bonne idée."},{id:"e08",t:"Je ne suis pas sûr·e."},{id:"e09",t:"Raconte-moi plus."},{id:"e10",t:"Je comprends ce que tu veux dire."},{id:"e11",t:"Ça me fait réfléchir."},{id:"e12",t:"Je te fais confiance sur ce point."}]},
+    { cat:"🌍 Cultures", items:[{id:"k01",t:"J'aimerais en savoir plus sur ta culture."},{id:"k02",t:"Chez moi, on a l'habitude de faire autrement."},{id:"k03",t:"Je découvre quelque chose de nouveau grâce à toi."},{id:"k04",t:"C'est différent de ce que je connais, et c'est bien."},{id:"k05",t:"Quelle est ta tradition préférée ?"},{id:"k06",t:"La nourriture de ton pays me fascine."},{id:"k07",t:"Comment dit-on « merci » dans ta langue ?"},{id:"k08",t:"Nos cultures se ressemblent sur ce point."},{id:"k09",t:"J'admire la façon dont tu vois le monde."},{id:"k10",t:"Tu m'as appris quelque chose aujourd'hui."},{id:"k11",t:"Je veux comprendre, pas juger."},{id:"k12",t:"La diversité nous rend plus riches."}]},
+    { cat:"❤️ Gratitude", items:[{id:"t01",t:"Merci pour tout."},{id:"t02",t:"Tu as été d'une grande aide."},{id:"t03",t:"Je t'en suis très reconnaissant·e."},{id:"t04",t:"Ton soutien compte beaucoup."},{id:"t05",t:"C'était exactement ce dont j'avais besoin."},{id:"t06",t:"Je n'oublierai pas ce geste."},{id:"t07",t:"Tu es quelqu'un de précieux·se pour moi."},{id:"t08",t:"Merci d'être là."},{id:"t09",t:"Ça m'a vraiment touché·e."},{id:"t10",t:"Je voudrais te rendre la pareille."},{id:"t11",t:"Tu mérites d'être remercié·e."},{id:"t12",t:"Ta gentillesse change tout."}]},
+    { cat:"🙏 Soutien", items:[{id:"s01",t:"Je suis là pour toi."},{id:"s02",t:"Tu n'es pas seul·e."},{id:"s03",t:"Prends soin de toi."},{id:"s04",t:"Je pense à toi dans cette épreuve."},{id:"s05",t:"Ça va s'arranger, j'en suis sûr·e."},{id:"s06",t:"Tu peux me parler si tu veux."},{id:"s07",t:"Je te souhaite de la force."},{id:"s08",t:"Tu es plus fort·e que tu ne le crois."},{id:"s09",t:"On traversera ça ensemble."},{id:"s10",t:"J'admire ta résilience."},{id:"s11",t:"Reste positif·ve, même si c'est dur."},{id:"s12",t:"Je suis fier·fière de toi."}]},
+    { cat:"🎉 Joie", items:[{id:"j01",t:"Quelle bonne nouvelle !"},{id:"j02",t:"Je suis tellement content·e pour toi."},{id:"j03",t:"Il faut fêter ça !"},{id:"j04",t:"Tu le mérites vraiment."},{id:"j05",t:"Je partage ta joie."},{id:"j06",t:"C'est une excellente nouvelle."},{id:"j07",t:"Ça m'a fait sourire d'apprendre ça."},{id:"j08",t:"Félicitations !"},{id:"j09",t:"C'est un moment important."},{id:"j10",t:"Je voulais que tu saches : tu as bien fait."},{id:"j11",t:"Tu rayonnes !"},{id:"j12",t:"Continuons sur cette lancée."}]},
+    { cat:"🌙 Pause", items:[{id:"p01",t:"Je dois y aller, à très vite."},{id:"p02",t:"On continue cette conversation plus tard ?"},{id:"p03",t:"Je serai absent·e quelques jours, je reviendrai."},{id:"p04",t:"Je t'écrirai quand j'aurai plus de temps."},{id:"p05",t:"Je suis en déplacement cette semaine."},{id:"p06",t:"Je te souhaite une bonne continuation."},{id:"p07",t:"Je prends un peu de recul."},{id:"p08",t:"Ne t'inquiète pas si je mets du temps à répondre."},{id:"p09",t:"Je reviens bientôt."},{id:"p10",t:"On se reparle très vite."},{id:"p11",t:"Prends soin de toi d'ici là."},{id:"p12",t:"Je reste joignable si c'est urgent."}]}
+  ],
+  en: [
+    { cat:"👋 Greetings", items:[{id:"g01",t:"Hello, I'm glad we're talking."},{id:"g02",t:"Good evening! How are you?"},{id:"g03",t:"It's good to catch up with you."},{id:"g04",t:"I'm thinking of you."},{id:"g05",t:"How was your day?"},{id:"g06",t:"You seem busy, we can talk later."},{id:"g07",t:"I just wanted to say hi."},{id:"g08",t:"Are you free to chat?"},{id:"g09",t:"I hope you're doing well."},{id:"g10",t:"It's been a while since we last talked!"},{id:"g11",t:"Sending you warm thoughts."},{id:"g12",t:"Good night, talk soon."}]},
+    { cat:"😊 Well-being", items:[{id:"w01",t:"I'm doing well, thanks for asking."},{id:"w02",t:"I'm a bit tired these days."},{id:"w03",t:"Things are pretty good today."},{id:"w04",t:"I had a tough day."},{id:"w05",t:"I'm feeling great!"},{id:"w06",t:"I'm a little stressed."},{id:"w07",t:"I'm going through a complicated time."},{id:"w08",t:"Everything's fine, don't worry."},{id:"w09",t:"I need some rest."},{id:"w10",t:"I'm happy right now."},{id:"w11",t:"I've been low on energy lately."},{id:"w12",t:"I feel calm and at peace."}]},
+    { cat:"🤝 Connection", items:[{id:"c01",t:"I'd love for us to meet up soon."},{id:"c02",t:"Our exchanges mean a lot to me."},{id:"c03",t:"I really appreciate you."},{id:"c04",t:"I thought of you today."},{id:"c05",t:"I've missed you."},{id:"c06",t:"I'm here if you need me."},{id:"c07",t:"I'd like to get to know you better."},{id:"c08",t:"You can count on me."},{id:"c09",t:"Our differences enrich me."},{id:"c10",t:"I'm glad we're in touch."},{id:"c11",t:"I look forward to sharing more with you."},{id:"c12",t:"This friendship is precious to me."}]},
+    { cat:"📅 Planning", items:[{id:"o01",t:"When could we meet?"},{id:"o02",t:"I'm free this weekend."},{id:"o03",t:"I'm not available right now."},{id:"o04",t:"Shall we reschedule?"},{id:"o05",t:"What time works best for you?"},{id:"o06",t:"I confirm our meeting."},{id:"o07",t:"I have to cancel, I'm sorry."},{id:"o08",t:"Where would you prefer to meet?"},{id:"o09",t:"I'll be there on time."},{id:"o10",t:"I might be running late."},{id:"o11",t:"That works perfectly for me."},{id:"o12",t:"Let me check and get back to you."}]},
+    { cat:"💬 Dialogue", items:[{id:"e01",t:"I don't quite understand, could you rephrase?"},{id:"e02",t:"That's interesting what you're saying."},{id:"e03",t:"I agree with you."},{id:"e04",t:"I see things a bit differently."},{id:"e05",t:"You're right."},{id:"e06",t:"I'll think about it."},{id:"e07",t:"That's a good idea."},{id:"e08",t:"I'm not sure."},{id:"e09",t:"Tell me more."},{id:"e10",t:"I understand what you mean."},{id:"e11",t:"That gives me something to think about."},{id:"e12",t:"I trust you on this."}]},
+    { cat:"🌍 Cultures", items:[{id:"k01",t:"I'd love to learn more about your culture."},{id:"k02",t:"Back home, we usually do things differently."},{id:"k03",t:"I'm discovering something new thanks to you."},{id:"k04",t:"It's different from what I know, and that's great."},{id:"k05",t:"What's your favourite tradition?"},{id:"k06",t:"The food from your country fascinates me."},{id:"k07",t:"How do you say 'thank you' in your language?"},{id:"k08",t:"Our cultures are similar in this way."},{id:"k09",t:"I admire the way you see the world."},{id:"k10",t:"You taught me something today."},{id:"k11",t:"I want to understand, not judge."},{id:"k12",t:"Diversity makes us richer."}]},
+    { cat:"❤️ Gratitude", items:[{id:"t01",t:"Thank you for everything."},{id:"t02",t:"You've been a great help."},{id:"t03",t:"I'm very grateful to you."},{id:"t04",t:"Your support means a lot."},{id:"t05",t:"That was exactly what I needed."},{id:"t06",t:"I won't forget this gesture."},{id:"t07",t:"You are someone precious to me."},{id:"t08",t:"Thank you for being here."},{id:"t09",t:"That really touched me."},{id:"t10",t:"I'd love to return the favour."},{id:"t11",t:"You deserve to be thanked."},{id:"t12",t:"Your kindness changes everything."}]},
+    { cat:"🙏 Support", items:[{id:"s01",t:"I'm here for you."},{id:"s02",t:"You're not alone."},{id:"s03",t:"Take care of yourself."},{id:"s04",t:"I'm thinking of you in this difficult time."},{id:"s05",t:"It will get better, I'm sure of it."},{id:"s06",t:"You can talk to me if you want."},{id:"s07",t:"I wish you strength."},{id:"s08",t:"You're stronger than you think."},{id:"s09",t:"We'll get through this together."},{id:"s10",t:"I admire your resilience."},{id:"s11",t:"Stay positive, even when it's hard."},{id:"s12",t:"I'm proud of you."}]},
+    { cat:"🎉 Joy", items:[{id:"j01",t:"What great news!"},{id:"j02",t:"I'm so happy for you."},{id:"j03",t:"We should celebrate!"},{id:"j04",t:"You really deserve it."},{id:"j05",t:"I share your joy."},{id:"j06",t:"That's excellent news."},{id:"j07",t:"That made me smile."},{id:"j08",t:"Congratulations!"},{id:"j09",t:"This is an important moment."},{id:"j10",t:"I want you to know: you did the right thing."},{id:"j11",t:"You're shining!"},{id:"j12",t:"Let's keep this momentum going."}]},
+    { cat:"🌙 Pause", items:[{id:"p01",t:"I have to go, talk very soon."},{id:"p02",t:"Shall we continue this conversation later?"},{id:"p03",t:"I'll be away for a few days, I'll be back."},{id:"p04",t:"I'll write when I have more time."},{id:"p05",t:"I'm travelling this week."},{id:"p06",t:"I wish you all the best."},{id:"p07",t:"I'm taking a little step back."},{id:"p08",t:"Don't worry if I take time to reply."},{id:"p09",t:"I'll be back soon."},{id:"p10",t:"We'll talk again very soon."},{id:"p11",t:"Take care of yourself until then."},{id:"p12",t:"I'm reachable if it's urgent."}]}
+  ],
+  es: [
+    { cat:"👋 Saludos", items:[{id:"g01",t:"Hola, me alegra que hablemos."},{id:"g02",t:"¡Buenas noches! ¿Cómo estás?"},{id:"g03",t:"Es genial verte de nuevo."},{id:"g04",t:"Estoy pensando en ti."},{id:"g05",t:"¿Cómo fue tu día?"},{id:"g06",t:"Pareces ocupado/a, podemos hablar después."},{id:"g07",t:"Solo quería saludarte."},{id:"g08",t:"¿Tienes tiempo para charlar?"},{id:"g09",t:"Espero que estés bien."},{id:"g10",t:"¡Hace mucho que no hablamos!"},{id:"g11",t:"Te mando un pensamiento cálido."},{id:"g12",t:"Buenas noches, hasta pronto."}]},
+    { cat:"😊 Bienestar", items:[{id:"w01",t:"Estoy bien, gracias por preguntar."},{id:"w02",t:"Estoy un poco cansado/a últimamente."},{id:"w03",t:"Hoy las cosas van bastante bien."},{id:"w04",t:"Tuve un día difícil."},{id:"w05",t:"¡Me siento genial!"},{id:"w06",t:"Estoy algo estresado/a."},{id:"w07",t:"Estoy pasando un momento complicado."},{id:"w08",t:"Todo va bien, no te preocupes."},{id:"w09",t:"Necesito descansar."},{id:"w10",t:"Soy feliz en este momento."},{id:"w11",t:"He tenido poca energía últimamente."},{id:"w12",t:"Me siento tranquilo/a y sereno/a."}]},
+    { cat:"🤝 Conexión", items:[{id:"c01",t:"Me encantaría que nos viéramos pronto."},{id:"c02",t:"Nuestros intercambios significan mucho para mí."},{id:"c03",t:"Te aprecio de verdad."},{id:"c04",t:"Hoy pensé en ti."},{id:"c05",t:"Te he echado de menos."},{id:"c06",t:"Estoy aquí si me necesitas."},{id:"c07",t:"Me gustaría conocerte mejor."},{id:"c08",t:"Puedes contar conmigo."},{id:"c09",t:"Nuestras diferencias me enriquecen."},{id:"c10",t:"Me alegra que estemos en contacto."},{id:"c11",t:"Espero compartir más contigo."},{id:"c12",t:"Esta amistad es muy valiosa para mí."}]},
+    { cat:"📅 Organización", items:[{id:"o01",t:"¿Cuándo podríamos vernos?"},{id:"o02",t:"Estoy libre este fin de semana."},{id:"o03",t:"Ahora mismo no estoy disponible."},{id:"o04",t:"¿Aplazamos para otro momento?"},{id:"o05",t:"¿Qué momento te va mejor?"},{id:"o06",t:"Confirmo nuestra cita."},{id:"o07",t:"Tengo que cancelar, lo siento."},{id:"o08",t:"¿Dónde prefieres que nos veamos?"},{id:"o09",t:"Estaré allí a tiempo."},{id:"o10",t:"Es posible que llegue tarde."},{id:"o11",t:"Me va perfecto."},{id:"o12",t:"Lo miro y te digo."}]},
+    { cat:"💬 Diálogo", items:[{id:"e01",t:"No lo entiendo del todo, ¿puedes reformularlo?"},{id:"e02",t:"Es interesante lo que dices."},{id:"e03",t:"Estoy de acuerdo contigo."},{id:"e04",t:"Yo lo veo de otra manera."},{id:"e05",t:"Tienes razón."},{id:"e06",t:"Lo estoy pensando."},{id:"e07",t:"Es una buena idea."},{id:"e08",t:"No estoy seguro/a."},{id:"e09",t:"Cuéntame más."},{id:"e10",t:"Entiendo lo que quieres decir."},{id:"e11",t:"Eso me da que pensar."},{id:"e12",t:"Confío en ti en este punto."}]},
+    { cat:"🌍 Culturas", items:[{id:"k01",t:"Me gustaría saber más sobre tu cultura."},{id:"k02",t:"En mi casa solemos hacerlo de otra manera."},{id:"k03",t:"Gracias a ti descubro algo nuevo."},{id:"k04",t:"Es diferente a lo que conozco, y eso es bueno."},{id:"k05",t:"¿Cuál es tu tradición favorita?"},{id:"k06",t:"La comida de tu país me fascina."},{id:"k07",t:"¿Cómo se dice «gracias» en tu idioma?"},{id:"k08",t:"Nuestras culturas se parecen en esto."},{id:"k09",t:"Admiro tu manera de ver el mundo."},{id:"k10",t:"Hoy me has enseñado algo."},{id:"k11",t:"Quiero entender, no juzgar."},{id:"k12",t:"La diversidad nos enriquece."}]},
+    { cat:"❤️ Gratitud", items:[{id:"t01",t:"Gracias por todo."},{id:"t02",t:"Has sido de gran ayuda."},{id:"t03",t:"Te lo agradezco mucho."},{id:"t04",t:"Tu apoyo significa mucho."},{id:"t05",t:"Era justo lo que necesitaba."},{id:"t06",t:"No olvidaré este gesto."},{id:"t07",t:"Eres alguien muy valioso/a para mí."},{id:"t08",t:"Gracias por estar aquí."},{id:"t09",t:"Eso me llegó al corazón."},{id:"t10",t:"Me gustaría devolvértelo."},{id:"t11",t:"Te mereces que te den las gracias."},{id:"t12",t:"Tu amabilidad lo cambia todo."}]},
+    { cat:"🙏 Apoyo", items:[{id:"s01",t:"Aquí estoy para ti."},{id:"s02",t:"No estás solo/a."},{id:"s03",t:"Cuídate."},{id:"s04",t:"Pienso en ti en este momento difícil."},{id:"s05",t:"Mejorará, estoy seguro/a."},{id:"s06",t:"Puedes hablar conmigo si quieres."},{id:"s07",t:"Te deseo fuerzas."},{id:"s08",t:"Eres más fuerte de lo que crees."},{id:"s09",t:"Lo superaremos juntos."},{id:"s10",t:"Admiro tu resiliencia."},{id:"s11",t:"Mantén la positividad, aunque sea difícil."},{id:"s12",t:"Estoy orgulloso/a de ti."}]},
+    { cat:"🎉 Alegría", items:[{id:"j01",t:"¡Qué gran noticia!"},{id:"j02",t:"Estoy muy feliz por ti."},{id:"j03",t:"¡Hay que celebrarlo!"},{id:"j04",t:"Te lo mereces."},{id:"j05",t:"Comparto tu alegría."},{id:"j06",t:"Es una noticia excelente."},{id:"j07",t:"Me alegró saberlo."},{id:"j08",t:"¡Felicitaciones!"},{id:"j09",t:"Es un momento importante."},{id:"j10",t:"Quiero que sepas: hiciste lo correcto."},{id:"j11",t:"¡Estás brillando!"},{id:"j12",t:"Sigamos con este impulso."}]},
+    { cat:"🌙 Pausa", items:[{id:"p01",t:"Tengo que irme, hasta muy pronto."},{id:"p02",t:"¿Continuamos esta conversación después?"},{id:"p03",t:"Estaré fuera unos días, ya vuelvo."},{id:"p04",t:"Te escribiré cuando tenga más tiempo."},{id:"p05",t:"Esta semana estoy de viaje."},{id:"p06",t:"Te deseo lo mejor."},{id:"p07",t:"Voy a tomar un poco de distancia."},{id:"p08",t:"No te preocupes si tardo en responder."},{id:"p09",t:"Vuelvo pronto."},{id:"p10",t:"Hablamos muy pronto."},{id:"p11",t:"Cuídate hasta entonces."},{id:"p12",t:"Sigo disponible si es urgente."}]}
+  ],
+  zh: [
+    { cat:"👋 问候", items:[{id:"g01",t:"你好，很高兴我们能交谈。"},{id:"g02",t:"晚上好！你怎么样？"},{id:"g03",t:"很高兴再次见到你。"},{id:"g04",t:"我在想你。"},{id:"g05",t:"你今天过得怎么样？"},{id:"g06",t:"你看起来很忙，我们可以晚些再聊。"},{id:"g07",t:"我只是想跟你打个招呼。"},{id:"g08",t:"你有空聊聊吗？"},{id:"g09",t:"希望你一切都好。"},{id:"g10",t:"好久不见了！"},{id:"g11",t:"送给你温暖的思念。"},{id:"g12",t:"晚安，再见。"}]},
+    { cat:"😊 健康", items:[{id:"w01",t:"我很好，谢谢你问。"},{id:"w02",t:"我最近有点累。"},{id:"w03",t:"今天还不错。"},{id:"w04",t:"我今天过得很辛苦。"},{id:"w05",t:"我感觉很好！"},{id:"w06",t:"我有点紧张。"},{id:"w07",t:"我正在经历一段复杂的时期。"},{id:"w08",t:"一切都好，别担心。"},{id:"w09",t:"我需要休息一下。"},{id:"w10",t:"我现在很快乐。"},{id:"w11",t:"我最近精力不足。"},{id:"w12",t:"我感到平静和安详。"}]},
+    { cat:"🤝 联系", items:[{id:"c01",t:"希望我们能尽快见面。"},{id:"c02",t:"我们的交流对我非常重要。"},{id:"c03",t:"我真的很欣赏你。"},{id:"c04",t:"今天我想到你了。"},{id:"c05",t:"我想念你。"},{id:"c06",t:"如果你需要我，我在这里。"},{id:"c07",t:"我想更了解你。"},{id:"c08",t:"你可以依靠我。"},{id:"c09",t:"我们的差异让我更丰富。"},{id:"c10",t:"很高兴我们保持联系。"},{id:"c11",t:"我期待与你分享更多。"},{id:"c12",t:"这份友谊对我很宝贵。"}]},
+    { cat:"📅 安排", items:[{id:"o01",t:"我们什么时候可以见面？"},{id:"o02",t:"这个周末我有空。"},{id:"o03",t:"我现在不方便。"},{id:"o04",t:"我们改期？"},{id:"o05",t:"什么时候对你最方便？"},{id:"o06",t:"我确认我们的约会。"},{id:"o07",t:"我需要取消，非常抱歉。"},{id:"o08",t:"你更喜欢在哪里见面？"},{id:"o09",t:"我会准时到的。"},{id:"o10",t:"我可能会迟到。"},{id:"o11",t:"这对我来说完全合适。"},{id:"o12",t:"我看一下然后回复你。"}]},
+    { cat:"💬 对话", items:[{id:"e01",t:"我不太明白，你能换一种说法吗？"},{id:"e02",t:"你说的很有意思。"},{id:"e03",t:"我同意你的看法。"},{id:"e04",t:"我的想法有些不同。"},{id:"e05",t:"你说得对。"},{id:"e06",t:"我在想这件事。"},{id:"e07",t:"这是个好主意。"},{id:"e08",t:"我不确定。"},{id:"e09",t:"跟我说更多。"},{id:"e10",t:"我理解你的意思。"},{id:"e11",t:"这让我思考。"},{id:"e12",t:"我在这方面信任你。"}]},
+    { cat:"🌍 文化", items:[{id:"k01",t:"我想更了解你的文化。"},{id:"k02",t:"在我家乡，我们习惯于不同的做法。"},{id:"k03",t:"因为你，我发现了新的东西。"},{id:"k04",t:"这和我了解的不同，这很好。"},{id:"k05",t:"你最喜欢的传统是什么？"},{id:"k06",t:"你们国家的食物让我着迷。"},{id:"k07",t:"你们语言中「谢谢」怎么说？"},{id:"k08",t:"我们的文化在这方面很相似。"},{id:"k09",t:"我钦佩你看待世界的方式。"},{id:"k10",t:"今天你教了我一些东西。"},{id:"k11",t:"我想理解，不是评判。"},{id:"k12",t:"多样性让我们更丰富。"}]},
+    { cat:"❤️ 感恩", items:[{id:"t01",t:"谢谢你的一切。"},{id:"t02",t:"你帮了我很大的忙。"},{id:"t03",t:"我非常感激你。"},{id:"t04",t:"你的支持很重要。"},{id:"t05",t:"这正是我需要的。"},{id:"t06",t:"我不会忘记这个举动。"},{id:"t07",t:"你对我来说是珍贵的人。"},{id:"t08",t:"谢谢你在这里。"},{id:"t09",t:"这真的触动了我。"},{id:"t10",t:"我想回报你。"},{id:"t11",t:"你应该得到感谢。"},{id:"t12",t:"你的善意改变了一切。"}]},
+    { cat:"🙏 支持", items:[{id:"s01",t:"我在这里支持你。"},{id:"s02",t:"你不孤单。"},{id:"s03",t:"好好照顾自己。"},{id:"s04",t:"在这段困难时期，我在想着你。"},{id:"s05",t:"情况会好转的，我确信。"},{id:"s06",t:"如果你愿意，可以跟我说说。"},{id:"s07",t:"我祝你坚强。"},{id:"s08",t:"你比你想象的更坚强。"},{id:"s09",t:"我们一起度过这段时期。"},{id:"s10",t:"我钦佩你的韧性。"},{id:"s11",t:"即使困难，也要保持积极。"},{id:"s12",t:"我为你感到骄傲。"}]},
+    { cat:"🎉 喜悦", items:[{id:"j01",t:"多好的消息啊！"},{id:"j02",t:"我为你感到非常高兴。"},{id:"j03",t:"我们应该庆祝！"},{id:"j04",t:"你真的值得。"},{id:"j05",t:"我和你共享这份喜悦。"},{id:"j06",t:"这是个极好的消息。"},{id:"j07",t:"听到这个我笑了。"},{id:"j08",t:"恭喜！"},{id:"j09",t:"这是个重要时刻。"},{id:"j10",t:"我想让你知道：你做对了。"},{id:"j11",t:"你在发光！"},{id:"j12",t:"让我们保持这股势头。"}]},
+    { cat:"🌙 暂停", items:[{id:"p01",t:"我得走了，很快再见。"},{id:"p02",t:"我们稍后继续这个对话？"},{id:"p03",t:"我会离开几天，我会回来的。"},{id:"p04",t:"等我有更多时间再写信给你。"},{id:"p05",t:"这周我在旅途中。"},{id:"p06",t:"祝你一切顺利。"},{id:"p07",t:"我需要稍微退后一步。"},{id:"p08",t:"如果我回复慢，不用担心。"},{id:"p09",t:"我很快就回来。"},{id:"p10",t:"我们很快再聊。"},{id:"p11",t:"在那之前好好照顾自己。"},{id:"p12",t:"如果紧急我仍然可以联系到。"}]}
+  ],
+  ar: [
+    { cat:"👋 تحيات", items:[{id:"g01",t:"مرحبًا، يسعدني أننا نتحدث."},{id:"g02",t:"مساء الخير! كيف حالك؟"},{id:"g03",t:"يسرني لقاؤك مجددًا."},{id:"g04",t:"أفكر فيك."},{id:"g05",t:"كيف كان يومك؟"},{id:"g06",t:"تبدو مشغولًا، يمكننا التحدث لاحقًا."},{id:"g07",t:"أردت فقط أن أحييك."},{id:"g08",t:"هل أنت فارغ للحديث؟"},{id:"g09",t:"أتمنى أن تكون بخير."},{id:"g10",t:"مرّ وقت طويل منذ آخر حديثنا!"},{id:"g11",t:"أرسل إليك أفكارًا دافئة."},{id:"g12",t:"تصبح على خير، إلى اللقاء."}]},
+    { cat:"😊 صحة", items:[{id:"w01",t:"أنا بخير، شكرًا على السؤال."},{id:"w02",t:"أنا متعب قليلاً هذه الأيام."},{id:"w03",t:"الأمور جيدة جدًا اليوم."},{id:"w04",t:"كان يومًا صعبًا."},{id:"w05",t:"أشعر بحالة رائعة!"},{id:"w06",t:"أنا متوتر قليلًا."},{id:"w07",t:"أمر بفترة معقدة."},{id:"w08",t:"كل شيء على ما يرام، لا تقلق."},{id:"w09",t:"أحتاج إلى الراحة."},{id:"w10",t:"أنا سعيد الآن."},{id:"w11",t:"طاقتي منخفضة هذه الأيام."},{id:"w12",t:"أشعر بالهدوء والسكينة."}]},
+    { cat:"🤝 تواصل", items:[{id:"c01",t:"أتمنى أن نلتقي قريبًا."},{id:"c02",t:"تبادلاتنا تعني لي الكثير."},{id:"c03",t:"أقدرك حقًا."},{id:"c04",t:"فكرت فيك اليوم."},{id:"c05",t:"اشتقت إليك."},{id:"c06",t:"أنا هنا إذا احتجتني."},{id:"c07",t:"أودّ التعرف عليك أكثر."},{id:"c08",t:"يمكنك الاعتماد علي."},{id:"c09",t:"اختلافاتنا تثريني."},{id:"c10",t:"يسعدني أننا على تواصل."},{id:"c11",t:"أتطلع إلى مشاركة المزيد معك."},{id:"c12",t:"هذه الصداقة ثمينة بالنسبة لي."}]},
+    { cat:"📅 تنظيم", items:[{id:"o01",t:"متى يمكننا اللقاء؟"},{id:"o02",t:"أنا فارغ هذا الأسبوع."},{id:"o03",t:"لست متاحًا الآن."},{id:"o04",t:"هل نؤجل لوقت آخر؟"},{id:"o05",t:"أي وقت يناسبك أكثر؟"},{id:"o06",t:"أؤكد موعدنا."},{id:"o07",t:"يجب أن أُلغي، أنا آسف."},{id:"o08",t:"أين تفضل أن نلتقي؟"},{id:"o09",t:"سأكون هناك في الوقت المحدد."},{id:"o10",t:"قد أتأخر قليلًا."},{id:"o11",t:"هذا مناسب تمامًا لي."},{id:"o12",t:"سأتحقق وأعود إليك."}]},
+    { cat:"💬 حوار", items:[{id:"e01",t:"لم أفهم تمامًا، هل يمكنك إعادة الصياغة؟"},{id:"e02",t:"ما تقوله مثير للاهتمام."},{id:"e03",t:"أنا أوافقك الرأي."},{id:"e04",t:"أرى الأمور بشكل مختلف قليلًا."},{id:"e05",t:"أنت محق."},{id:"e06",t:"أفكر في الأمر."},{id:"e07",t:"فكرة جيدة."},{id:"e08",t:"لست متأكدًا."},{id:"e09",t:"أخبرني أكثر."},{id:"e10",t:"أفهم ما تقصده."},{id:"e11",t:"هذا يجعلني أفكر."},{id:"e12",t:"أثق بك في هذه النقطة."}]},
+    { cat:"🌍 ثقافات", items:[{id:"k01",t:"أود معرفة المزيد عن ثقافتك."},{id:"k02",t:"في بلدي، اعتدنا على طريقة مختلفة."},{id:"k03",t:"أكتشف شيئًا جديدًا بفضلك."},{id:"k04",t:"هذا مختلف عما أعرفه، وهذا جيد."},{id:"k05",t:"ما هو تقليدك المفضل؟"},{id:"k06",t:"طعام بلدك يأسرني."},{id:"k07",t:"كيف تقول 'شكرًا' بلغتك؟"},{id:"k08",t:"ثقافتانا متشابهتان في هذه النقطة."},{id:"k09",t:"أعجب بطريقتك في رؤية العالم."},{id:"k10",t:"علمتني شيئًا اليوم."},{id:"k11",t:"أريد أن أفهم، لا أن أحكم."},{id:"k12",t:"التنوع يثرينا."}]},
+    { cat:"❤️ امتنان", items:[{id:"t01",t:"شكرًا على كل شيء."},{id:"t02",t:"لقد كنت عونًا كبيرًا."},{id:"t03",t:"أنا ممتن لك جدًا."},{id:"t04",t:"دعمك يعني الكثير."},{id:"t05",t:"كان هذا بالضبط ما احتجته."},{id:"t06",t:"لن أنسى هذه اللفتة."},{id:"t07",t:"أنت شخص ثمين بالنسبة لي."},{id:"t08",t:"شكرًا لوجودك هنا."},{id:"t09",t:"هذا أثّر فيّ حقًا."},{id:"t10",t:"أودّ أن أردّ الجميل."},{id:"t11",t:"تستحق الشكر."},{id:"t12",t:"لطفك يغير كل شيء."}]},
+    { cat:"🙏 دعم", items:[{id:"s01",t:"أنا هنا من أجلك."},{id:"s02",t:"لست وحدك."},{id:"s03",t:"اعتنِ بنفسك."},{id:"s04",t:"أفكر فيك في هذه المحنة."},{id:"s05",t:"ستتحسن الأمور، أنا متأكد."},{id:"s06",t:"يمكنك التحدث معي إذا أردت."},{id:"s07",t:"أتمنى لك القوة."},{id:"s08",t:"أنت أقوى مما تعتقد."},{id:"s09",t:"سنتجاوز هذا معًا."},{id:"s10",t:"أعجب بصمودك."},{id:"s11",t:"ابق إيجابيًا حتى لو كان الأمر صعبًا."},{id:"s12",t:"أنا فخور بك."}]},
+    { cat:"🎉 فرح", items:[{id:"j01",t:"يا له من خبر رائع!"},{id:"j02",t:"أنا سعيد جدًا من أجلك."},{id:"j03",t:"يجب أن نحتفل!"},{id:"j04",t:"تستحق ذلك حقًا."},{id:"j05",t:"أشاركك فرحك."},{id:"j06",t:"هذا خبر ممتاز."},{id:"j07",t:"ابتسمت حين علمت."},{id:"j08",t:"تهانيّ!"},{id:"j09",t:"هذه لحظة مهمة."},{id:"j10",t:"أريدك أن تعلم: تصرفت بشكل صحيح."},{id:"j11",t:"أنت تتألق!"},{id:"j12",t:"لنحافظ على هذا الزخم."}]},
+    { cat:"🌙 توقف", items:[{id:"p01",t:"يجب أن أذهب، إلى اللقاء قريبًا."},{id:"p02",t:"هل نكمل هذا الحديث لاحقًا؟"},{id:"p03",t:"سأكون غائبًا بضعة أيام، سأعود."},{id:"p04",t:"سأكتب إليك حين أجد وقتًا."},{id:"p05",t:"أنا مسافر هذا الأسبوع."},{id:"p06",t:"أتمنى لك التوفيق."},{id:"p07",t:"سآخذ قسطًا من الراحة."},{id:"p08",t:"لا تقلق إن تأخرت في الرد."},{id:"p09",t:"سأعود قريبًا."},{id:"p10",t:"سنتحدث قريبًا جدًا."},{id:"p11",t:"اعتنِ بنفسك حتى ذلك الحين."},{id:"p12",t:"يمكن التواصل معي إن كان الأمر عاجلًا."}]}
+  ],
+  fa: [
+    { cat:"👋 سلام", items:[{id:"g01",t:"سلام، خوشحالم که داریم صحبت می‌کنیم."},{id:"g02",t:"شب بخیر! حالت چطوره؟"},{id:"g03",t:"خوشحالم که دوباره می‌بینمت."},{id:"g04",t:"به تو فکر می‌کنم."},{id:"g05",t:"روزت چطور گذشت؟"},{id:"g06",t:"به نظر می‌رسی مشغول باشی، بعداً صحبت می‌کنیم."},{id:"g07",t:"فقط می‌خواستم سلام بدم."},{id:"g08",t:"وقت داری صحبت کنیم؟"},{id:"g09",t:"امیدوارم حالت خوب باشه."},{id:"g10",t:"مدتیه که صحبت نکردیم!"},{id:"g11",t:"یه فکر گرم برات می‌فرستم."},{id:"g12",t:"شب بخیر، به زودی می‌بینمت."}]},
+    { cat:"😊 سلامت", items:[{id:"w01",t:"حالم خوبه، ممنون که پرسیدی."},{id:"w02",t:"این روزا کمی خسته‌ام."},{id:"w03",t:"امروز اوضاع خوبیه."},{id:"w04",t:"روز سختی داشتم."},{id:"w05",t:"حالم خیلی خوبه!"},{id:"w06",t:"کمی استرس دارم."},{id:"w07",t:"دارم از یه دوره پیچیده رد می‌شم."},{id:"w08",t:"همه چیز خوبه، نگران نباش."},{id:"w09",t:"نیاز به استراحت دارم."},{id:"w10",t:"الان خوشحالم."},{id:"w11",t:"این روزا انرژی کمی دارم."},{id:"w12",t:"حس آرامش دارم."}]},
+    { cat:"🤝 ارتباط", items:[{id:"c01",t:"دوست دارم زود همدیگه رو ببینیم."},{id:"c02",t:"گفتگوهامون برام خیلی مهمه."},{id:"c03",t:"واقعاً قدردانت هستم."},{id:"c04",t:"امروز به تو فکر کردم."},{id:"c05",t:"دلم برات تنگ شده بود."},{id:"c06",t:"اگه نیاز داشتی اینجام."},{id:"c07",t:"دوست دارم بیشتر بشناسمت."},{id:"c08",t:"می‌تونی روم حساب کنی."},{id:"c09",t:"تفاوت‌هامون منو غنی‌تر می‌کنه."},{id:"c10",t:"خوشحالم که در تماسیم."},{id:"c11",t:"منتظرم بیشتر باهات در ارتباط باشم."},{id:"c12",t:"این دوستی برام ارزشمنده."}]},
+    { cat:"📅 برنامه", items:[{id:"o01",t:"کی می‌تونیم همدیگه رو ببینیم؟"},{id:"o02",t:"این آخر هفته وقت دارم."},{id:"o03",t:"الان در دسترس نیستم."},{id:"o04",t:"برای وقت دیگه‌ای تنظیم کنیم؟"},{id:"o05",t:"چه وقتی برات بهتره؟"},{id:"o06",t:"قرارمون رو تأیید می‌کنم."},{id:"o07",t:"باید لغو کنم، ببخشید."},{id:"o08",t:"کجا ترجیح می‌دی ببینیم؟"},{id:"o09",t:"سر وقت می‌رسم."},{id:"o10",t:"شاید کمی دیر برسم."},{id:"o11",t:"برام کاملاً مناسبه."},{id:"o12",t:"چک می‌کنم و بهت خبر می‌دم."}]},
+    { cat:"💬 گفتگو", items:[{id:"e01",t:"کاملاً نفهمیدم، می‌تونی دوباره بگی؟"},{id:"e02",t:"حرفت جالبه."},{id:"e03",t:"موافقم."},{id:"e04",t:"من یه جور دیگه می‌بینم."},{id:"e05",t:"حق با توئه."},{id:"e06",t:"دارم فکر می‌کنم."},{id:"e07",t:"ایده خوبیه."},{id:"e08",t:"مطمئن نیستم."},{id:"e09",t:"بیشتر بگو."},{id:"e10",t:"می‌فهمم چی می‌گی."},{id:"e11",t:"این فکرم رو به جاهای تازه‌ای می‌بره."},{id:"e12",t:"در این مورد بهت اعتماد دارم."}]},
+    { cat:"🌍 فرهنگ", items:[{id:"k01",t:"دوست دارم بیشتر درباره فرهنگت بدونم."},{id:"k02",t:"پیش ما معمولاً فرق داره."},{id:"k03",t:"با کمک تو چیز جدیدی کشف کردم."},{id:"k04",t:"با آنچه می‌شناختم فرق داره، و این خوبه."},{id:"k05",t:"سنت مورد علاقه‌ات چیه؟"},{id:"k06",t:"غذای کشورت منو مجذوب می‌کنه."},{id:"k07",t:"«ممنون» به زبان تو چطوره؟"},{id:"k08",t:"فرهنگ‌هامون در این زمینه شبیه همن."},{id:"k09",t:"به نگاهت به دنیا احترام می‌ذارم."},{id:"k10",t:"امروز چیزی بهم یاد دادی."},{id:"k11",t:"می‌خوام بفهمم، نه قضاوت کنم."},{id:"k12",t:"تنوع ما رو غنی‌تر می‌کنه."}]},
+    { cat:"❤️ قدردانی", items:[{id:"t01",t:"ممنون از همه چیز."},{id:"t02",t:"خیلی کمکم کردی."},{id:"t03",t:"خیلی ممنونتم."},{id:"t04",t:"حمایتت خیلی مهمه."},{id:"t05",t:"دقیقاً همون چیزی بود که نیاز داشتم."},{id:"t06",t:"این لطف رو فراموش نمی‌کنم."},{id:"t07",t:"برام خیلی گرانبهایی."},{id:"t08",t:"ممنون که هستی."},{id:"t09",t:"واقعاً تأثیرگذار بود."},{id:"t10",t:"دوست دارم جبران کنم."},{id:"t11",t:"لایق تقدیری."},{id:"t12",t:"کمکت همه چیز رو عوض کرد."}]},
+    { cat:"🙏 حمایت", items:[{id:"s01",t:"اینجام برات."},{id:"s02",t:"تنها نیستی."},{id:"s03",t:"مراقب خودت باش."},{id:"s04",t:"توی این سختی به تو فکر می‌کنم."},{id:"s05",t:"درست می‌شه، مطمئنم."},{id:"s06",t:"اگه خواستی می‌تونی باهام حرف بزنی."},{id:"s07",t:"برات آرزوی قدرت دارم."},{id:"s08",t:"قوی‌تری از اونچه فکر می‌کنی."},{id:"s09",t:"با هم از این رد می‌شیم."},{id:"s10",t:"به تاب‌آوریت احترام می‌ذارم."},{id:"s11",t:"حتی وقتی سخته، مثبت بمون."},{id:"s12",t:"به تو افتخار می‌کنم."}]},
+    { cat:"🎉 شادی", items:[{id:"j01",t:"چه خبر خوبی!"},{id:"j02",t:"خیلی برات خوشحالم."},{id:"j03",t:"باید جشن گرفت!"},{id:"j04",t:"لایقشی."},{id:"j05",t:"در شادیت شریکم."},{id:"j06",t:"خبر خیلی خوبیه."},{id:"j07",t:"شنیدنش منو ذوق‌زده کرد."},{id:"j08",t:"تبریک!"},{id:"j09",t:"این یه لحظه مهمه."},{id:"j10",t:"می‌خواستم بدونی: درست عمل کردی."},{id:"j11",t:"داری می‌درخشی!"},{id:"j12",t:"بذار این شتاب رو حفظ کنیم."}]},
+    { cat:"🌙 وقفه", items:[{id:"p01",t:"باید برم، به زودی می‌بینمت."},{id:"p02",t:"این گفتگو رو بعداً ادامه می‌دیم؟"},{id:"p03",t:"چند روزی غایبم، بعداً تماس می‌گیرم."},{id:"p04",t:"وقتی بیشتر داشتم می‌نویسم."},{id:"p05",t:"این هفته مسافرتم."},{id:"p06",t:"برات آرزوی موفقیت دارم."},{id:"p07",t:"یه کم فاصله می‌گیرم."},{id:"p08",t:"اگه دیر جواب دادم نگران نباش."},{id:"p09",t:"زود برمی‌گردم."},{id:"p10",t:"خیلی زود می‌بینمت."},{id:"p11",t:"تا اون موقع مراقب خودت باش."},{id:"p12",t:"اگه فوری بود در دسترسم."}]}
+  ]
+};
+
+/* ══════════════════════════════
+   SUPABASE CONFIG — À REMPLIR ICI
+══════════════════════════════ */
+let SUPA_URL = 'httupa';      // ← remplacer par https://xxxx.supabase.co
+let SUPA_KEY = 'sb_publishable_9DsidppWdkDI'; // ← remplacer par la clé anon JWT (eyJ…)
+
+/* ══════════════════════════════
+   STATE
+
+   ⚠️ userId est TOUJOURS lu depuis sessionStorage (propre à chaque onglet),
+   jamais depuis localStorage — c'est ce qui garantit qu'ouvrir 2 fenêtres
+   sur la même machine donne 2 identités distinctes.
+══════════════════════════════ */
+const STATE = {
+  lang: 'fr', name: '', conv: '',
+  userId: null,       // généré au boot, stocké dans sessionStorage
+  selectedMsg: null, selectedCat: 0,
+  supaClient: null, pollInterval: null,
+  lastMsgId: 0, fontSize: 16
+};
+
+function genId() { return 'U' + Math.random().toString(36).slice(2, 10).toUpperCase(); }
+
+function boot() {
+  // 1. Lire les préférences persistantes (nom, langue, conv) depuis localStorage
+  try {
+    const s = JSON.parse(localStorage.getItem('ponti_prefs') || '{}');
+    if (s.lang)     STATE.lang     = s.lang;
+    if (s.name)     STATE.name     = s.name;
+    if (s.conv)     STATE.conv     = s.conv;
+    if (s.fontSize) STATE.fontSize = s.fontSize;
+    // Récupérer les URL/KEY éventuellement sauvegardés
+    if (s.supaUrl) SUPA_URL = s.supaUrl;
+    if (s.supaKey) SUPA_KEY = s.supaKey;
+  } catch(e) {}
+
+  // 2. userId EXCLUSIVEMENT dans sessionStorage → unique par onglet
+  let uid = sessionStorage.getItem('ponti_uid');
+  if (!uid) { uid = genId(); sessionStorage.setItem('ponti_uid', uid); }
+  STATE.userId = uid;
+
+  // Afficher l'UID dans l'écran setup (pour info)
+  document.getElementById('uid-display').textContent = uid;
+
+  // Pré-remplir les champs
+  document.getElementById('inp-name').value = STATE.name;
+  document.getElementById('inp-lang').value = STATE.lang;
+  document.getElementById('inp-conv').value = STATE.conv;
+  document.getElementById('inp-supa-url').value = (SUPA_URL.startsWith('http') ? SUPA_URL : '');
+  document.getElementById('inp-supa-key').value = (SUPA_KEY.startsWith('eyJ') ? SUPA_KEY : '');
+  document.documentElement.style.setProperty('--fs', STATE.fontSize + 'px');
+  applyLang();
+}
+
+function savePrefs() {
+  localStorage.setItem('ponti_prefs', JSON.stringify({
+    lang: STATE.lang, name: STATE.name, conv: STATE.conv,
+    fontSize: STATE.fontSize, supaUrl: SUPA_URL, supaKey: SUPA_KEY
+  }));
+}
+
+/* ══════════════════════════════
+   LANG
+══════════════════════════════ */
+function applyLang() {
+  const lang = document.getElementById('inp-lang').value;
+  STATE.lang = lang;
+  const t = UI[lang];
+  const rtl = ['ar','fa'].includes(lang);
+  document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
+  document.documentElement.lang = lang;
+  document.getElementById('lbl-name').textContent = t.name;
+  document.getElementById('lbl-lang').textContent = t.lang;
+  document.getElementById('lbl-conv').textContent = t.conv;
+  document.getElementById('hint-conv').textContent = t.hintConv;
+  document.getElementById('brand-tag').textContent = t.tag;
+  document.getElementById('btn-start').textContent = t.start;
+  document.getElementById('lbl-supa').textContent = t.supa;
+}
+
+/* ══════════════════════════════
+   SETUP → CHAT
+══════════════════════════════ */
+function startChat() {
+  const name = document.getElementById('inp-name').value.trim();
+  const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
+  const supaUrl = document.getElementById('inp-supa-url').value.trim();
+  const supaKey = document.getElementById('inp-supa-key').value.trim();
+  const t = UI[STATE.lang];
+  if (!name) { toast('⚠ ' + (STATE.lang==='fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
+  if (!conv || conv.length < 2) { toast('⚠ ' + (STATE.lang==='fr' ? 'Code de session requis.' : 'Session code required.')); return; }
+  STATE.name = name; STATE.conv = conv;
+  if (supaUrl) SUPA_URL = supaUrl;
+  if (supaKey) SUPA_KEY = supaKey;
+  savePrefs();
+
+  document.getElementById('screen-setup').classList.remove('active');
+  document.getElementById('screen-chat').classList.add('active');
+  initChat();
+}
+
+function goSetup() {
+  if (STATE.pollInterval) { clearInterval(STATE.pollInterval); STATE.pollInterval = null; }
+  document.getElementById('screen-chat').classList.remove('active');
+  document.getElementById('screen-setup').classList.add('active');
+  document.getElementById('inp-name').value = STATE.name;
+  document.getElementById('inp-lang').value = STATE.lang;
+  document.getElementById('inp-conv').value = STATE.conv;
+  applyLang();
+}
+
+function initChat() {
+  const rtl = ['ar','fa'].includes(STATE.lang);
+  document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
+  document.getElementById('sess-badge').textContent = STATE.conv;
+  document.getElementById('who-name').textContent = STATE.name;
+  document.getElementById('who-lang').textContent = STATE.lang.toUpperCase();
+  document.getElementById('empty-txt').textContent = UI[STATE.lang].emptyWait;
+  buildCats();
+  setupPolling();
+}
+
+/* ══════════════════════════════
+   CATEGORIES + MESSAGES
+══════════════════════════════ */
+function buildCats() {
+  const cats = MSG[STATE.lang] || MSG.fr;
+  const row = document.getElementById('cat-row');
+  row.innerHTML = '';
+  cats.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill' + (i === STATE.selectedCat ? ' on' : '');
+    btn.textContent = c.cat;
+    btn.onclick = () => selectCat(i);
+    row.appendChild(btn);
+  });
+  selectCat(STATE.selectedCat);
+}
+
+function selectCat(i) {
+  STATE.selectedCat = i; STATE.selectedMsg = null; updatePreview();
+  document.querySelectorAll('.cat-pill').forEach((p, j) => p.classList.toggle('on', j===i));
+  const cats = MSG[STATE.lang] || MSG.fr;
+  const grid = document.getElementById('msg-grid');
+  grid.innerHTML = '';
+  cats[i].items.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'msg-btn'; btn.textContent = item.t; btn.dataset.id = item.id;
+    btn.onclick = () => pickMsg(item, btn);
+    grid.appendChild(btn);
+  });
+}
+
+function pickMsg(item, el) {
+  document.querySelectorAll('.msg-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  STATE.selectedMsg = item;
+  updatePreview();
+}
+
+function updatePreview() {
+  const prev = document.getElementById('preview');
+  const txt  = document.getElementById('preview-txt');
+  const btn  = document.getElementById('btn-send');
+  if (STATE.selectedMsg) {
+    prev.classList.add('ready'); txt.textContent = STATE.selectedMsg.t; btn.disabled = false;
+  } else {
+    prev.classList.remove('ready'); txt.textContent = UI[STATE.lang].placeholder; btn.disabled = true;
+  }
+}
+
+/* ══════════════════════════════
+   SUPABASE
+══════════════════════════════ */
+function validateSupa() {
+  const urlOk = typeof SUPA_URL==='string' && SUPA_URL.startsWith('https://') && SUPA_URL.includes('.supabase.co');
+  const keyOk = typeof SUPA_KEY==='string' && SUPA_KEY.startsWith('eyJ') && SUPA_KEY.length > 100;
+  if (!urlOk) return { ok:false, reason:'SUPA_URL invalide — doit être https://xxxx.supabase.co' };
+  if (!keyOk) return { ok:false, reason:'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon, >100 chars)' };
+  return { ok:true };
+}
+
+function setupPolling() {
+  if (STATE.pollInterval) { clearInterval(STATE.pollInterval); STATE.pollInterval = null; }
+  showPanel(); setPanel('loading', 'Vérification de la configuration…');
+  const chk = validateSupa();
+  if (!chk.ok) { setPanel('error_config', chk.reason); setDot('wait'); return; }
+  setPanel('loading', 'Chargement du SDK Supabase…');
+  if (!window.supabase) {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+    s.onload  = () => connectAndPoll();
+    s.onerror = () => { setPanel('error_network', 'SDK Supabase inaccessible.'); setDot('wait'); };
+    document.head.appendChild(s);
+  } else { connectAndPoll(); }
+}
+
+async function connectAndPoll() {
+  setPanel('loading', 'Connexion à Supabase…');
+  try {
+    STATE.supaClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    const { data, error } = await STATE.supaClient.from('ponti_messages').select('id').limit(1);
+    if (error) {
+      const m = error.message || JSON.stringify(error);
+      const isAuth = error.code==='PGRST301' || m.toLowerCase().includes('jwt') || m.toLowerCase().includes('apikey');
+      setPanel(isAuth ? 'error_config' : 'error_network', (isAuth ? 'Auth refusée : ' : 'Erreur : ') + m);
+      setDot('wait'); return;
+    }
+    setPanel('connected', 'Session : ' + STATE.conv);
+    setDot('ok');
+    document.getElementById('empty-txt').textContent = UI[STATE.lang].emptyReady;
+    await loadHistory();
+    STATE.pollInterval = setInterval(pollNew, 3000);
+  } catch(e) {
+    setPanel('error_network', 'Exception : ' + e.message); setDot('wait');
+  }
+}
+
+async function loadHistory() {
+  try {
+    const { data, error } = await STATE.supaClient
+      .from('ponti_messages').select('*').eq('conv_id', STATE.conv)
+      .order('created_at', { ascending:true }).limit(100);
+    if (error) { showPanel(); setPanel('error_query', 'Historique : ' + error.message); return; }
+    if (data && data.length) {
+      data.forEach(row => renderMsg(row, false));
+      STATE.lastMsgId = data[data.length-1].id;
+    }
+  } catch(e) { showPanel(); setPanel('error_network', 'Historique : ' + e.message); }
+}
+
+async function pollNew() {
+  if (!STATE.supaClient) return;
+  try {
+    let q = STATE.supaClient.from('ponti_messages').select('*')
+      .eq('conv_id', STATE.conv).order('created_at', { ascending:true });
+    if (STATE.lastMsgId) q = q.gt('id', STATE.lastMsgId);
+    const { data, error } = await q;
+    if (error) { console.warn('poll:', error.message); return; }
+    if (data && data.length) {
+      // N'afficher que les messages des autres — les nôtres sont déjà affichés optimistiquement
+      data.forEach(row => { if (row.sender_id !== STATE.userId) renderMsg(row, true); });
+      STATE.lastMsgId = data[data.length-1].id;
+    }
+  } catch(e) { console.warn('poll:', e.message); }
+}
+
+async function sendMessage() {
+  if (!STATE.selectedMsg) return;
+  const msg = STATE.selectedMsg;
+  const row = {
+    conv_id: STATE.conv,
+    sender_id: STATE.userId,    // ← userId unique par onglet (sessionStorage)
+    sender_name: STATE.name,
+    sender_lang: STATE.lang,
+    msg_id: msg.id,
+    msg_text: msg.t
+  };
+  // Affichage optimiste immédiat
+  renderMsg({ ...row, created_at: new Date().toISOString() }, false, true);
+  STATE.selectedMsg = null;
+  document.querySelectorAll('.msg-btn').forEach(b => b.classList.remove('sel'));
+  updatePreview();
+  if (!STATE.supaClient) { toast('⏳ Connexion en cours…'); return; }
+  try {
+    const { error } = await STATE.supaClient.from('ponti_messages').insert(row);
+    if (error) {
+      toast('❌ Envoi échoué : ' + (error.message||JSON.stringify(error)));
+      showPanel(); setPanel('error_query', 'Insert refusé : ' + (error.message||''));
+    }
+  } catch(e) { toast('❌ ' + e.message); }
+}
+
+function renderMsg(row, animate, isMine) {
+  const area  = document.getElementById('msgs');
+  const empty = document.getElementById('empty-state');
+  if (empty) empty.style.display = 'none';
+  const mine = isMine !== undefined ? isMine : (row.sender_id === STATE.userId);
+
+  // Traduction équivalente (pour messages reçus)
+  let equiv = null;
+  if (!mine && row.msg_id) {
+    for (const cat of (MSG[STATE.lang] || MSG.fr)) {
+      const item = cat.items.find(i => i.id === row.msg_id);
+      if (item) { equiv = item.t; break; }
+    }
+  }
+
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-row ' + (mine ? 'mine' : 'theirs');
+  if (!animate) wrap.style.animation = 'none';
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble'; bub.textContent = row.msg_text;
+  wrap.appendChild(bub);
+
+  if (equiv && !mine) {
+    const eq = document.createElement('div');
+    eq.className = 'equiv'; eq.textContent = '↳ ' + equiv;
+    wrap.appendChild(eq);
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'msg-meta';
+  const time = new Date(row.created_at).toLocaleTimeString(STATE.lang, {hour:'2-digit',minute:'2-digit'});
+  meta.textContent = (mine ? (UI[STATE.lang].youSent || 'Vous') : (row.sender_name||'')) + ' · ' + time;
+  wrap.appendChild(meta);
+
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+/* ══════════════════════════════
+   UI HELPERS
+══════════════════════════════ */
+function setDot(s) {
+  const d = document.getElementById('conn-dot');
+  d.className = 'conn-dot ' + (s==='ok' ? 'ok' : 'wait');
+}
+
+function setPanel(state, detail) {
+  const panel = document.getElementById('conn-panel');
+  const retry = document.getElementById('conn-retry');
+  panel.className = 'conn-panel ' + state;
+  panel.classList.remove('hide');
+  retry.style.display = 'none';
+  const labels = {
+    loading:      { ico:'⏳', tit:'Connexion en cours…' },
+    connected:    { ico:'✅', tit:'Connecté' },
+    error_config: { ico:'⚙️', tit:'Erreur de configuration' },
+    error_network:{ ico:'📡', tit:'Erreur réseau' },
+    error_query:  { ico:'⚠️', tit:'Erreur de requête' },
+  };
+  const l = labels[state] || labels.error_query;
+  document.getElementById('conn-ico').textContent   = l.ico;
+  document.getElementById('conn-title').textContent = l.tit;
+  document.getElementById('conn-msg').textContent   = detail||'';
+  if (state.startsWith('error')) retry.style.display = 'inline-flex';
+  if (state === 'connected') {
+    setTimeout(() => { panel.classList.add('hide'); }, 3000);
+  }
+}
+function showPanel() {
+  const p = document.getElementById('conn-panel');
+  p.classList.remove('hide');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+/* BOOT */
+boot();
+</script>
+
+<!--
+  ══════════════════════════════════════════════════
+  SQL — table (inchangée)
+  ══════════════════════════════════════════════════
+  DROP TABLE IF EXISTS ponti_messages;
+  CREATE TABLE ponti_messages (
+    id          BIGSERIAL PRIMARY KEY,
+    created_at  TIMESTAMPTZ DEFAULT NOW(),
+    conv_id     TEXT NOT NULL,
+    sender_id   TEXT NOT NULL,   ← unique par onglet grâce à sessionStorage
+    sender_name TEXT,
+    sender_lang TEXT,
+    msg_id      TEXT,
+    msg_text    TEXT
+  );
+  ══════════════════════════════════════════════════
+-->
+</body>
+</html>
