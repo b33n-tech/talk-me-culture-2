@@ -774,7 +774,6 @@ function applyLang() {
   document.getElementById('hint-conv').textContent = t.hintConv;
   document.getElementById('brand-tag').textContent = t.tag;
   document.getElementById('btn-start').textContent = t.start;
-  document.getElementById('lbl-supa').textContent = t.supa;
 }
 
 /* ══════════════════════════════
@@ -866,10 +865,8 @@ function updatePreview() {
    SUPABASE
 ══════════════════════════════ */
 function validateSupa() {
-  const urlOk = typeof SUPA_URL==='string' && SUPA_URL.startsWith('https://') && SUPA_URL.includes('.supabase.co');
-  const keyOk = typeof SUPA_KEY==='string' && SUPA_KEY.startsWith('eyJ') && SUPA_KEY.length > 100;
-  if (!urlOk) return { ok:false, reason:'SUPA_URL invalide — doit être https://xxxx.supabase.co' };
-  if (!keyOk) return { ok:false, reason:'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon, >100 chars)' };
+  if (!SUPA_URL || SUPA_URL.length < 5) return { ok:false, reason:'SUPA_URL non configurée.' };
+  if (!SUPA_KEY || SUPA_KEY.length < 5) return { ok:false, reason:'SUPA_KEY non configurée.' };
   return { ok:true };
 }
 
