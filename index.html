@@ -550,23 +550,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink
         <div class="hint" id="hint-conv">Le code partagé avec votre interlocuteur·rice.</div>
       </div>
 
-      <details class="supa-details">
-        <summary id="lbl-supa">Paramètres Supabase</summary>
-        <div class="field">
-          <label>URL Supabase</label>
-          <input type="text" id="inp-supa-url" placeholder="https://nzsxcpmzlrznrpasnonc.supabase.co">
-        </div>
-        <div class="field">
-          <label>Clé anon</label>
-          <input type="password" id="inp-supa-key" placeholder="sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI">
-        </div>
-      </details>
-
-      <div class="user-id-note" id="uid-note">
-        ID de fenêtre : <strong id="uid-display">—</strong><br>
-        Chaque fenêtre obtient un identifiant unique — vous pouvez ouvrir plusieurs onglets sur la même machine.
-      </div>
-
       <div class="sep"></div>
 
       <button class="btn-start" id="btn-start" onclick="startChat()">Commencer →</button>
@@ -751,8 +734,6 @@ function boot() {
     if (s.conv)     STATE.conv     = s.conv;
     if (s.fontSize) STATE.fontSize = s.fontSize;
     // Récupérer les URL/KEY éventuellement sauvegardés
-    if (s.supaUrl) SUPA_URL = s.supaUrl;
-    if (s.supaKey) SUPA_KEY = s.supaKey;
   } catch(e) {}
 
   // 2. userId EXCLUSIVEMENT dans sessionStorage → unique par onglet
@@ -761,14 +742,11 @@ function boot() {
   STATE.userId = uid;
 
   // Afficher l'UID dans l'écran setup (pour info)
-  document.getElementById('uid-display').textContent = uid;
 
   // Pré-remplir les champs
   document.getElementById('inp-name').value = STATE.name;
   document.getElementById('inp-lang').value = STATE.lang;
   document.getElementById('inp-conv').value = STATE.conv;
-  document.getElementById('inp-supa-url').value = (SUPA_URL.startsWith('http') ? SUPA_URL : '');
-  document.getElementById('inp-supa-key').value = (SUPA_KEY.startsWith('eyJ') ? SUPA_KEY : '');
   document.documentElement.style.setProperty('--fs', STATE.fontSize + 'px');
   applyLang();
 }
@@ -776,7 +754,7 @@ function boot() {
 function savePrefs() {
   localStorage.setItem('ponti_prefs', JSON.stringify({
     lang: STATE.lang, name: STATE.name, conv: STATE.conv,
-    fontSize: STATE.fontSize, supaUrl: SUPA_URL, supaKey: SUPA_KEY
+    fontSize: STATE.fontSize
   }));
 }
 
@@ -805,16 +783,10 @@ function applyLang() {
 function startChat() {
   const name = document.getElementById('inp-name').value.trim();
   const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
-  const supaUrl = document.getElementById('inp-supa-url').value.trim();
-  const supaKey = document.getElementById('inp-supa-key').value.trim();
-  const t = UI[STATE.lang];
   if (!name) { toast('⚠ ' + (STATE.lang==='fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
   if (!conv || conv.length < 2) { toast('⚠ ' + (STATE.lang==='fr' ? 'Code de session requis.' : 'Session code required.')); return; }
   STATE.name = name; STATE.conv = conv;
-  if (supaUrl) SUPA_URL = supaUrl;
-  if (supaKey) SUPA_KEY = supaKey;
   savePrefs();
-
   document.getElementById('screen-setup').classList.remove('active');
   document.getElementById('screen-chat').classList.add('active');
   initChat();
