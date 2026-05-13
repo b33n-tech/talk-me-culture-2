@@ -328,12 +328,23 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink
   border-bottom-left-radius: 4px;
 }
 
-.equiv {
-  font-size: 0.7rem;
+.bubble.flipped {
+  background: var(--accent-bg);
   color: var(--accent);
+  border-color: var(--accent-border);
+}
+.mine .bubble.flipped {
+  background: #3a3020;
+  color: #e8c4a4;
+}
+.tap-hint {
+  font-size: 0.62rem;
+  color: var(--ink-3);
   font-style: italic;
-  margin-top: 0.2rem;
+  margin-top: 0.18rem;
   padding: 0 0.3rem;
+  opacity: 0.7;
+  user-select: none;
 }
 
 .msg-meta {
@@ -616,16 +627,16 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink
    UI STRINGS
 ══════════════════════════════ */
 const UI = {
-  fr:{ name:"Votre prénom", lang:"Langue", conv:"Code de session", hintConv:"Le code partagé avec votre interlocuteur·rice.", start:"Commencer →", emptyWait:"En attente de connexion…", emptyReady:"Choisissez un message à envoyer.", statusWaiting:"En attente…", statusOk:"Connecté", placeholder:"Sélectionnez un message…", youSent:"Vous", tag:"Des ponts, pas des murs.", supa:"Paramètres Supabase" },
-  en:{ name:"Your first name", lang:"Language", conv:"Session code", hintConv:"The code shared with your contact.", start:"Start →", emptyWait:"Waiting for connection…", emptyReady:"Choose a message to send.", statusWaiting:"Waiting…", statusOk:"Connected", placeholder:"Select a message…", youSent:"You", tag:"Bridges, not walls.", supa:"Supabase settings" },
-  es:{ name:"Tu nombre", lang:"Idioma", conv:"Código de sesión", hintConv:"El código compartido con tu interlocutor/a.", start:"Empezar →", emptyWait:"Esperando conexión…", emptyReady:"Elige un mensaje para enviar.", statusWaiting:"Esperando…", statusOk:"Conectado", placeholder:"Selecciona un mensaje…", youSent:"Tú", tag:"Puentes, no muros.", supa:"Config. Supabase" },
-  zh:{ name:"您的名字", lang:"语言", conv:"会话代码", hintConv:"与对话伙伴共享的代码。", start:"开始 →", emptyWait:"等待连接中…", emptyReady:"请选择要发送的消息。", statusWaiting:"等待中…", statusOk:"已连接", placeholder:"选择一条消息…", youSent:"您", tag:"架桥，而非筑墙。", supa:"Supabase 设置" },
-  ar:{ name:"اسمك الأول", lang:"اللغة", conv:"رمز الجلسة", hintConv:"الرمز المشترك مع محاورك.", start:"ابدأ →", emptyWait:"في انتظار الاتصال…", emptyReady:"اختر رسالة لإرسالها.", statusWaiting:"في الانتظار…", statusOk:"متصل", placeholder:"اختر رسالة…", youSent:"أنت", tag:"جسور، لا جدران.", supa:"إعدادات Supabase" },
-  fa:{ name:"نام شما", lang:"زبان", conv:"کد جلسه", hintConv:"کد مشترک با طرف مقابل.", start:"شروع →", emptyWait:"در انتظار اتصال…", emptyReady:"یک پیام برای ارسال انتخاب کنید.", statusWaiting:"در انتظار…", statusOk:"متصل", placeholder:"یک پیام انتخاب کنید…", youSent:"شما", tag:"پل، نه دیوار.", supa:"تنظیمات Supabase" }
+  fr:{ name:"Votre prénom", lang:"Langue", conv:"Code de session", hintConv:"Le code partagé avec votre interlocuteur·rice.", start:"Commencer →", emptyWait:"En attente de connexion…", emptyReady:"Choisissez un message à envoyer.", statusWaiting:"En attente…", statusOk:"Connecté", placeholder:"Sélectionnez un message…", youSent:"Vous", tapOrig:"↩ Voir l'original", tapBack:"↩ Voir la traduction", tag:"Des ponts, pas des murs.", supa:"Paramètres Supabase" },
+  en:{ name:"Your first name", lang:"Language", conv:"Session code", hintConv:"The code shared with your contact.", start:"Start →", emptyWait:"Waiting for connection…", emptyReady:"Choose a message to send.", statusWaiting:"Waiting…", statusOk:"Connected", placeholder:"Select a message…", youSent:"You", tapOrig:"↩ See original", tapBack:"↩ See translation", tag:"Bridges, not walls.", supa:"Supabase settings" },
+  es:{ name:"Tu nombre", lang:"Idioma", conv:"Código de sesión", hintConv:"El código compartido con tu interlocutor/a.", start:"Empezar →", emptyWait:"Esperando conexión…", emptyReady:"Elige un mensaje para enviar.", statusWaiting:"Esperando…", statusOk:"Conectado", placeholder:"Selecciona un mensaje…", youSent:"Tú", tapOrig:"↩ Ver original", tapBack:"↩ Ver traducción", tag:"Puentes, no muros.", supa:"Config. Supabase" },
+  zh:{ name:"您的名字", lang:"语言", conv:"会话代码", hintConv:"与对话伙伴共享的代码。", start:"开始 →", emptyWait:"等待连接中…", emptyReady:"请选择要发送的消息。", statusWaiting:"等待中…", statusOk:"已连接", placeholder:"选择一条消息…", youSent:"您", tapOrig:"↩ 查看原文", tapBack:"↩ 查看翻译", tag:"架桥，而非筑墙。", supa:"Supabase 设置" },
+  ar:{ name:"اسمك الأول", lang:"اللغة", conv:"رمز الجلسة", hintConv:"الرمز المشترك مع محاورك.", start:"ابدأ →", emptyWait:"في انتظار الاتصال…", emptyReady:"اختر رسالة لإرسالها.", statusWaiting:"في الانتظار…", statusOk:"متصل", placeholder:"اختر رسالة…", youSent:"أنت", tapOrig:"↩ عرض الأصل", tapBack:"↩ عرض الترجمة", tag:"جسور، لا جدران.", supa:"إعدادات Supabase" },
+  fa:{ name:"نام شما", lang:"زبان", conv:"کد جلسه", hintConv:"کد مشترک با طرف مقابل.", start:"شروع →", emptyWait:"در انتظار اتصال…", emptyReady:"یک پیام برای ارسال انتخاب کنید.", statusWaiting:"در انتظار…", statusOk:"متصل", placeholder:"یک پیام انتخاب کنید…", youSent:"شما", tapOrig:"↩ دیدن اصل", tapBack:"↩ دیدن ترجمه", tag:"پل، نه دیوار.", supa:"تنظیمات Supabase" }
 };
 
 /* ══════════════════════════════
-   MESSAGE LIBRARY (identical to V1)
+   MESSAGE LIBRARY
 ══════════════════════════════ */
 const MSG = {
   fr: [
@@ -717,7 +728,7 @@ let SUPA_KEY = 'sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI'; // ← remplace
 ══════════════════════════════ */
 const STATE = {
   lang: 'fr', name: '', conv: '',
-  userId: null,       // généré au boot, stocké dans sessionStorage
+  userId: null,
   selectedMsg: null, selectedCat: 0,
   supaClient: null, pollInterval: null,
   lastMsgId: 0, fontSize: 16
@@ -726,14 +737,16 @@ const STATE = {
 function genId() { return 'U' + Math.random().toString(36).slice(2, 10).toUpperCase(); }
 
 function boot() {
-  // 1. Lire les préférences persistantes (nom, langue, conv) depuis localStorage
+  // 1. Lire les préférences persistantes depuis localStorage
   try {
     const s = JSON.parse(localStorage.getItem('ponti_prefs') || '{}');
     if (s.lang)     STATE.lang     = s.lang;
     if (s.name)     STATE.name     = s.name;
     if (s.conv)     STATE.conv     = s.conv;
     if (s.fontSize) STATE.fontSize = s.fontSize;
-    // Récupérer les URL/KEY éventuellement sauvegardés
+    // FIX: Récupérer les URL/KEY sauvegardés
+    if (s.supaUrl)  SUPA_URL = s.supaUrl;
+    if (s.supaKey)  SUPA_KEY = s.supaKey;
   } catch(e) {}
 
   // 2. userId EXCLUSIVEMENT dans sessionStorage → unique par onglet
@@ -741,9 +754,6 @@ function boot() {
   if (!uid) { uid = genId(); sessionStorage.setItem('ponti_uid', uid); }
   STATE.userId = uid;
 
-  // Afficher l'UID dans l'écran setup (pour info)
-
-  // Pré-remplir les champs
   document.getElementById('inp-name').value = STATE.name;
   document.getElementById('inp-lang').value = STATE.lang;
   document.getElementById('inp-conv').value = STATE.conv;
@@ -752,9 +762,11 @@ function boot() {
 }
 
 function savePrefs() {
+  // FIX: inclure supaUrl/supaKey dans la sauvegarde
   localStorage.setItem('ponti_prefs', JSON.stringify({
     lang: STATE.lang, name: STATE.name, conv: STATE.conv,
-    fontSize: STATE.fontSize
+    fontSize: STATE.fontSize,
+    supaUrl: SUPA_URL, supaKey: SUPA_KEY
   }));
 }
 
@@ -782,8 +794,8 @@ function applyLang() {
 function startChat() {
   const name = document.getElementById('inp-name').value.trim();
   const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
-  if (!name) { toast('⚠ ' + (STATE.lang==='fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
-  if (!conv || conv.length < 2) { toast('⚠ ' + (STATE.lang==='fr' ? 'Code de session requis.' : 'Session code required.')); return; }
+  if (!name) { toast('\u26a0 ' + (STATE.lang==='fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
+  if (!conv || conv.length < 2) { toast('\u26a0 ' + (STATE.lang==='fr' ? 'Code de session requis.' : 'Session code required.')); return; }
   STATE.name = name; STATE.conv = conv;
   savePrefs();
   document.getElementById('screen-setup').classList.remove('active');
@@ -817,6 +829,8 @@ function initChat() {
 ══════════════════════════════ */
 function buildCats() {
   const cats = MSG[STATE.lang] || MSG.fr;
+  // FIX: reset selectedCat si hors bornes après changement de langue
+  if (STATE.selectedCat >= cats.length) STATE.selectedCat = 0;
   const row = document.getElementById('cat-row');
   row.innerHTML = '';
   cats.forEach((c, i) => {
@@ -928,7 +942,6 @@ async function pollNew() {
     const { data, error } = await q;
     if (error) { console.warn('poll:', error.message); return; }
     if (data && data.length) {
-      // N'afficher que les messages des autres — les nôtres sont déjà affichés optimistiquement
       data.forEach(row => { if (row.sender_id !== STATE.userId) renderMsg(row, true); });
       STATE.lastMsgId = data[data.length-1].id;
     }
@@ -940,7 +953,7 @@ async function sendMessage() {
   const msg = STATE.selectedMsg;
   const row = {
     conv_id: STATE.conv,
-    sender_id: STATE.userId,    // ← userId unique par onglet (sessionStorage)
+    sender_id: STATE.userId,
     sender_name: STATE.name,
     sender_lang: STATE.lang,
     msg_id: msg.id,
@@ -951,14 +964,14 @@ async function sendMessage() {
   STATE.selectedMsg = null;
   document.querySelectorAll('.msg-btn').forEach(b => b.classList.remove('sel'));
   updatePreview();
-  if (!STATE.supaClient) { toast('⏳ Connexion en cours…'); return; }
+  if (!STATE.supaClient) { toast('\u23f3 Connexion en cours…'); return; }
   try {
     const { error } = await STATE.supaClient.from('ponti_messages').insert(row);
     if (error) {
-      toast('❌ Envoi échoué : ' + (error.message||JSON.stringify(error)));
+      toast('\u274c Envoi échoué : ' + (error.message||JSON.stringify(error)));
       showPanel(); setPanel('error_query', 'Insert refusé : ' + (error.message||''));
     }
-  } catch(e) { toast('❌ ' + e.message); }
+  } catch(e) { toast('\u274c ' + e.message); }
 }
 
 function renderMsg(row, animate, isMine) {
@@ -967,33 +980,57 @@ function renderMsg(row, animate, isMine) {
   if (empty) empty.style.display = 'none';
   const mine = isMine !== undefined ? isMine : (row.sender_id === STATE.userId);
 
-  // Traduction équivalente (pour messages reçus)
-  let equiv = null;
+  // Pour les messages reçus : chercher la traduction dans la langue du destinataire
+  let translated = null;
   if (!mine && row.msg_id) {
     for (const cat of (MSG[STATE.lang] || MSG.fr)) {
       const item = cat.items.find(i => i.id === row.msg_id);
-      if (item) { equiv = item.t; break; }
+      if (item) { translated = item.t; break; }
     }
   }
+
+  const displayText  = (translated && !mine) ? translated : row.msg_text;
+  const originalText = row.msg_text;
 
   const wrap = document.createElement('div');
   wrap.className = 'msg-row ' + (mine ? 'mine' : 'theirs');
   if (!animate) wrap.style.animation = 'none';
 
   const bub = document.createElement('div');
-  bub.className = 'bubble'; bub.textContent = row.msg_text;
-  wrap.appendChild(bub);
+  bub.className = 'bubble';
+  bub.textContent = displayText;
 
-  if (equiv && !mine) {
-    const eq = document.createElement('div');
-    eq.className = 'equiv'; eq.textContent = '↳ ' + equiv;
-    wrap.appendChild(eq);
+  // Clic = bascule original ↔ traduction (seulement pour messages reçus traduits)
+  // FIX: hint déclaré avant d'être utilisé dans le closure
+  let hint = null;
+  if (translated && !mine) {
+    hint = document.createElement('div');
+    hint.className = 'tap-hint';
+    // FIX: apostrophe typographique dans string JS → utiliser UI[] qui contient les bonnes valeurs
+    hint.textContent = UI[STATE.lang].tapOrig || '\u21a9 Voir l\u2019original';
+
+    bub.style.cursor = 'pointer';
+    let flipped = false;
+    bub.addEventListener('click', () => {
+      flipped = !flipped;
+      bub.textContent = flipped ? originalText : translated;
+      bub.classList.toggle('flipped', flipped);
+      hint.textContent = flipped
+        ? (UI[STATE.lang].tapBack || '\u21a9 Voir la traduction')
+        : (UI[STATE.lang].tapOrig || '\u21a9 Voir l\u2019original');
+    });
   }
+
+  wrap.appendChild(bub);
+  if (hint) wrap.appendChild(hint);
 
   const meta = document.createElement('div');
   meta.className = 'msg-meta';
-  const time = new Date(row.created_at).toLocaleTimeString(STATE.lang, {hour:'2-digit',minute:'2-digit'});
-  meta.textContent = (mine ? (UI[STATE.lang].youSent || 'Vous') : (row.sender_name||'')) + ' · ' + time;
+  // FIX: guard sur created_at null/invalide
+  const time = row.created_at
+    ? new Date(row.created_at).toLocaleTimeString(STATE.lang, {hour:'2-digit', minute:'2-digit'})
+    : '--:--';
+  meta.textContent = (mine ? (UI[STATE.lang].youSent || 'Vous') : (row.sender_name || '')) + ' \u00b7 ' + time;
   wrap.appendChild(meta);
 
   area.appendChild(wrap);
@@ -1015,11 +1052,11 @@ function setPanel(state, detail) {
   panel.classList.remove('hide');
   retry.style.display = 'none';
   const labels = {
-    loading:      { ico:'⏳', tit:'Connexion en cours…' },
-    connected:    { ico:'✅', tit:'Connecté' },
-    error_config: { ico:'⚙️', tit:'Erreur de configuration' },
-    error_network:{ ico:'📡', tit:'Erreur réseau' },
-    error_query:  { ico:'⚠️', tit:'Erreur de requête' },
+    loading:      { ico:'\u23f3', tit:'Connexion en cours\u2026' },
+    connected:    { ico:'\u2705', tit:'Connect\u00e9' },
+    error_config: { ico:'\u2699\ufe0f', tit:'Erreur de configuration' },
+    error_network:{ ico:'\ud83d\udce1', tit:'Erreur r\u00e9seau' },
+    error_query:  { ico:'\u26a0\ufe0f', tit:'Erreur de requ\u00eate' },
   };
   const l = labels[state] || labels.error_query;
   document.getElementById('conn-ico').textContent   = l.ico;
@@ -1030,6 +1067,7 @@ function setPanel(state, detail) {
     setTimeout(() => { panel.classList.add('hide'); }, 3000);
   }
 }
+
 function showPanel() {
   const p = document.getElementById('conn-panel');
   p.classList.remove('hide');
@@ -1047,14 +1085,14 @@ boot();
 
 <!--
   ══════════════════════════════════════════════════
-  SQL — table (inchangée)
+  SQL — table
   ══════════════════════════════════════════════════
   DROP TABLE IF EXISTS ponti_messages;
   CREATE TABLE ponti_messages (
     id          BIGSERIAL PRIMARY KEY,
     created_at  TIMESTAMPTZ DEFAULT NOW(),
     conv_id     TEXT NOT NULL,
-    sender_id   TEXT NOT NULL,   ← unique par onglet grâce à sessionStorage
+    sender_id   TEXT NOT NULL,
     sender_name TEXT,
     sender_lang TEXT,
     msg_id      TEXT,
